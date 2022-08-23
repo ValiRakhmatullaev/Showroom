@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+django-countries = "*"
+celery = "*"
+redis = "*"
+psycopg2 = "*"
+pip = "*"
+install = "*"
+dj-database-url = "*"
+django-filter = "*"
+psycopg2-binary = "*"
+rest-condition = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
