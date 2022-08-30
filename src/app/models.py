@@ -29,7 +29,7 @@ class Showroom(DateAddedUpdated, Information):
         db_table = "app"
 
 
-class  ShowroomCar(models.Model):
+class ShowroomCar(models.Model):
     showroom = models.ForeignKey(Showroom, on_delete=models.CASCADE)
     car = models.ForeignKey("producer.ProducerCar", on_delete=models.CASCADE)
     producer = models.ForeignKey("producer.Producer", on_delete=models.CASCADE)

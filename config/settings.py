@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", 'asbyd8f6QWD8Y80f^*)^V^*)VS80f)*)*GFVD(_F*_)yg)')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
 ALLOWED_HOSTS = ['*']
@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
+    'src.transaction',
 ]
 
 MIDDLEWARE = [
@@ -152,12 +154,40 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "api/showroom_user/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SERIALIZERS": {
+        "user_create": "src.users.serializers.ShowroomUserSerializer",
+        "activation": "djoser.serializers.ActivationSerializer",
+        "user": "djoser.serializers.UserSerializer",
+        "current_user": "djoser.serializers.UserSerializer",
+        "token": "djoser.serializers.TokenSerializer",
+        "token_create": "djoser.serializers.TokenCreateSerializer",
+        "user_create_password_retype": "djoser.serializers.UserCreatePasswordRetypeSerializer",
+        "user_delete": "djoser.serializers.UserDeleteSerializer",
+        "password_reset": "djoser.serializers.SendEmailResetSerializer",
+        "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
+        "password_reset_confirm_retype": "djoser.serializers.PasswordResetConfirmRetypeSerializer",
+        "set_password": "djoser.serializers.SetPasswordSerializer",
+        "set_password_retype": "djoser.serializers.SetPasswordRetypeSerializer",
+        "set_username": "djoser.serializers.SetUsernameSerializer",
+        "set_username_retype": "djoser.serializers.SetUsernameRetypeSerializer",
+        "username_reset": "djoser.serializers.SendEmailResetSerializer",
+        "username_reset_confirm": "djoser.serializers.UsernameResetConfirmSerializer",
+        "username_reset_confirm_retype": "djoser.serializers.UsernameResetConfirmRetypeSerializer",
+    },
+}
+
 # smtp
-EMAIL_HOST = os.environ.get("SMTP_HOST")
-EMAIL_HOST_USER = os.environ.get("HOST_EMAIL")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASS")
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# EMAIL_HOST = os.environ.get("SMTP_HOST")
+# EMAIL_HOST_USER = os.environ.get("HOST_EMAIL")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASS")
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+
 
 AUTH_USER_MODEL = 'users.ShowroomUser'
 # Internationalization
@@ -180,3 +210,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# celery
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("RESULT_BACKEND", "redis://redis:6379")
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    "visibility_timeout": 18000,
+    "max_retries": 2,
+}
+CELERY_TIMEZONE = "UTC"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60

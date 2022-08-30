@@ -1,11 +1,38 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  worker:
+    restart: always
+    build: .
+    volumes:
+      - ./:/backend
+    depends_on:
+      - redis
+      - web
+    command: 'celery -A config worker -l info'
+
+  beat:
+      restart: always
+      build: .
+      volumes:
+        - ./:/backend
+      depends_on:
+        - redis
+        - web
+        - worker
+      command: 'celery -A config beat -l info'
+
   web:
     container_name: backend
     build: .
     volumes:
-      - .:/backend
+      - ./:/backend
     command: sh ./entrypoint.sh
     ports:
       - '8080:8080'

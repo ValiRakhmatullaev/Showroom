@@ -22,7 +22,7 @@ urlpatterns = [
     path("api/", include("src.app.urls")),
     path("api/", include("src.customer.urls")),
     path("api/", include("src.producer.urls")),
-    # path("api/", include("src.users.urls")),
+    path("api/", include("src.users.urls")),
     path('api/auth/', include('djoser.urls')),
     re_path(r'auth/', include('djoser.urls.authtoken')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
