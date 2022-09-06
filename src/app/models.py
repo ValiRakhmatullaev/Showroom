@@ -11,13 +11,13 @@ class Showroom(DateAddedUpdated, Information):
         encoder=None,
         decoder=None,
         default={
-            "auto_name": "chevrolet",
-            "model": "malibu",
-            "color": "blue",
-            "year": "2017",
-            "price": 10000,
-            "engine": 1.5,
-            "body_type": "sedan",
+            "brand": "",
+            "model": "",
+            "color": "",
+            "year": "",
+            "price": "",
+            "engine": "",
+            "body_type": "",
         },
     )
 

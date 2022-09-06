@@ -42,7 +42,7 @@ class TransactionShowroomToCustomerViewSet(CustomViewSet):
         )
 
 
-class TransactionDealerToShowroomViewSet(CustomViewSet):
+class TransactionProducerToShowroomViewSet(CustomViewSet):
     queryset = SalesProducerToShowroom.objects.all()
     serializer_class = SalesShowroomToBuyersSerializer
     permission_classes = [(IsProducerUser | IsShowroomUser | IsAdminUser)]
@@ -50,13 +50,13 @@ class TransactionDealerToShowroomViewSet(CustomViewSet):
     @action(methods=["get"], detail=False, url_path="history")
     def list_of_transactions(self, request):
         """Return transactions list from Producer to Showroom"""
-        return super(TransactionDealerToShowroomViewSet, self).get(request)
+        return super(TransactionProducerToShowroomViewSet, self).get(request)
 
     @action(methods=["get"], detail=True, url_path="details")
     def details_of_transaction(self, request, pk):
         """Return list of customer transactions"""
-        dealers_transactions = SalesProducerToShowroom.objects.filter(dealer=pk)
-        data = SalesShowroomToBuyersSerializer(dealers_transactions, many=True).data
+        producer_transactions = SalesProducerToShowroom.objects.filter(producer=pk)
+        data = SalesShowroomToBuyersSerializer(producer_transactions, many=True).data
         return Response(
             {"Transaction history to producer": data}, status=status.HTTP_200_OK
         )

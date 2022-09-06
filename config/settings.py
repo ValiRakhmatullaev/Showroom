@@ -81,13 +81,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("POSTGRES_ENGINE"),
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST"),
-        "PORT": os.environ.get("POSTGRES_PORT"),
+    'default': {
+        'ENGINE': os.environ.get('POSTGRES_ENGINE'),
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
@@ -182,12 +182,11 @@ DJOSER = {
 }
 
 # smtp
-# EMAIL_HOST = os.environ.get("SMTP_HOST")
-# EMAIL_HOST_USER = os.environ.get("HOST_EMAIL")
-# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASS")
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 AUTH_USER_MODEL = 'users.ShowroomUser'
 # Internationalization

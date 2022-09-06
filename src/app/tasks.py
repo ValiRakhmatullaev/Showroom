@@ -1,82 +1,97 @@
 from celery import shared_task
-from config.celery import app
+from django.db import transaction
+from django.db.models import Q
+from celery import shared_task
+from django.db import transaction
+from django.db.models import Q
 
-# from src.main.service import send
-
-
-# @app.task()
-# def write_file(email):
-#     send(email)
-#     return True
-
-#
-# @app.task
-# def test_task():
-#     print('Worked')
-#     return True
+from src.app.models import Showroom, ShowroomCar
+from src.customer.models import Customer, CustomerOrder
+from src.producer.models import ProducerCar, Producer
+from src.app.models import Showroom, ShowroomCar
+from src.producer.models import ProducerCar, Producer
+from src.transaction.models import SalesProducerToShowroom, SalesShowroomToCustomer
 
 
-# from decimal import Decimal
-#
-# from celery import shared_task
-# from celery.utils.log import get_task_logger
-# from django.db import transaction
-# from django.db.models import Q
-#
-# from src.app.models import ShowroomCar, DiscountShowroom
-# from src.car.models import Car
-# from src.customer.models import CustomerOrder
-# from src.transaction.models import SalesShowroomToCustomer
-#
-# logger = get_task_logger(__name__)
-#
-#
-# @shared_task
-# def customer_buy_car():
-#     for order in CustomerOrder.objects.all():
-#         if order.is_active:
-#             desired_car = order.desired_car
-#             desired_car_search = (
-#                     Q(brand__startswith=desired_car.get("brand"))
-#                     & Q(model__icontains=desired_car.get("model"))
-#                     & Q(color__icontains=desired_car.get("color"))
-#                     & Q(year__exact=desired_car.get("year"))
-#                     & Q(engine__exact=desired_car.get("engine"))
-#                     & Q(body_type__icontains=desired_car.get("body_type"))
-#             )
-#             showroom_cars = ShowroomCar.objects.filter(
-#                 desired_car_search, dealer__isnull=True, customer__isnull=True
-#             ).order_by("price")
-#             for showroomcar in showroom_cars:
-#                 with transaction.atomic():
-#                     customer = order.customer
-#                     showroom = showroomcar.showroom
-#                     if customer.balance > 0:
-#                         discount = DiscountShowroom.objects.filter(
-#                             showrooms_discount=showroom,
-#                             discount_showroom_for_car=showroomcar,
-#                         ).first()
-#                         price = showroomcar.price * Decimal(
-#                             ((100 - discount.amount_of_discount) / 100)
-#                         )
-#                         SalesShowroomToCustomer.objects.create(
-#                             showroom=showroom,
-#                             customer=customer,
-#                             car=showroomcar,
-#                             price=price,
-#                             amount_of_discount=discount.amount_of_discount,
-#                         )
-#                         showroom.balance += price
-#                         showroom.save(update_fields=["balance"])
-#                         showroomcar.showroom = None
-#                         showroomcar.customer = order.customer
-#                         showroomcar.save(
-#                             update_fields=[
-#                                 "showroom",
-#                                 "customer",
-#                             ]
-#                         )
-#                         customer.balance -= price
-#                         customer.save(update_fields=["balance"])
-#                         order.is_active = False
-#                         order.save(update_fields=["is_active"])
+@shared_task
+def buy_car_from_producer():
+    # create QuerySet all showrooms
+    for showroom_item in Showroom.objects.all():
+        # create query showroom
+        query = showroom_item.specification
+        # select 2 fields from query instance (dictionary)
+        # we can select all fields
+        query_brand = query.get("brand")
+        query_model = query.get("model")
+        query_price = query.get("price")
+        # creating QuerySet that matches the showroom's query
+        producer_cars = ProducerCar.objects.filter(
+            (Q(car__brand__iexact=query_brand) |
+             Q(car__model__iexact=query_model)) &
+            Q(price__lte=query_price)
+
+        )
+        # print(query_brand, query_model, query_price)
+        for p_car in producer_cars:
+            # select price
+            producer_price = p_car.price
+
+            # if DealerSales.objects.filter(car__pk=d_car.car.pk).exists():
+            #     item = DealerSales.objects.get(car__pk=d_car.car.pk)
+            #     dealer_price = dealer_price - (item.discount * dealer_price)
+            #     print(f'dealer_price {dealer_price}')
+
+            # if not cars then scip
+            if p_car.count == 0:
+                continue
+
+            # if money is not enough
+            if showroom_item.balance < producer_price:
+                continue
+
+            # # if count of cars = 0
+            # if d_car.count <= 0:
+            #     continue
+
+            # instances for recording to DB
+            showroom_car = ProducerCar.objects.get(pk=p_car.car.pk)
+            # showroom_profile = ShowroomProfile.objects.get(pk=showroom_item.pk)
+            producer_profile = Producer.objects.get(pk=p_car.producer.pk)
+
+            with transaction.atomic():
+                # add car to showroom, increase count
+                result = ShowroomCar.objects.update_or_create(
+                    car=showroom_car,
+                    showroom=showroom_item,
+                    producer=producer_profile,
+                    price=producer_price,
+
+                )
+                # if result == False (item already exist), then increase count +1
+                if not result[1]:
+                    result[0].count += 1
+                    result[0].is_active = True
+                    result[0].save()
+
+                # decrease balance in showroom
+                showroom_item.balance -= producer_price
+                showroom_item.save()
+
+                # increase balance in dealer
+                producer_profile.balance += producer_price
+                producer_profile.save()
+
+                # decrease car in dealer car
+                p_car.count -= 1
+                # if cars instance == 0, is active == False
+                if p_car.count == 0:
+                    p_car.is_active = False
+                p_car.save()
+
+                # add transactions
+                SalesProducerToShowroom.objects.create(
+                    car=showroom_car,
+                    showroom=showroom_item,
+                    producer=producer_profile,
+                    price=producer_price,
+                )

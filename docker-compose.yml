@@ -11,7 +11,9 @@ services:
     restart: always
     build: .
     volumes:
-      - ./:/backend
+      - .:/backend
+    env_file:
+      - .env
     depends_on:
       - redis
       - web
@@ -21,7 +23,9 @@ services:
       restart: always
       build: .
       volumes:
-        - ./:/backend
+        - .:/backend
+      env_file:
+        - .env
       depends_on:
         - redis
         - web
@@ -32,19 +36,20 @@ services:
     container_name: backend
     build: .
     volumes:
-      - ./:/backend
+      - .:/backend
     command: sh ./entrypoint.sh
     ports:
       - '8080:8080'
     env_file:
-      - ./.env.dev
+      - .env
     depends_on:
       - db
 
   db:
     container_name: postgres
     image: postgres:13-alpine
-    env_file: ./.env.dev
+    env_file:
+      - .env
     volumes:
       - pg_data:/var/lib/postgresql/data/
     ports:

@@ -19,12 +19,9 @@ class SalesShowroomToCustomer(DateAdded, models.Model):
         null=True,
     )
     car = models.ForeignKey(
-        "producer.ProducerCar", on_delete=models.PROTECT, related_name="sold_car", null=True
+        "app.ShowroomCar", on_delete=models.PROTECT, related_name="sold_car", null=True
     )
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
-    amount_of_discount = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(30)]
-    )
 
     class Meta:
         db_table = "sales_showroom_to_customer"
@@ -32,7 +29,7 @@ class SalesShowroomToCustomer(DateAdded, models.Model):
     def __str__(self):
         template = (
             "{0.showroom} {0.customer} {0.car} {0.price}"
-            " {0.amount_of_discount} {0.added_date}"
+            "{0.added_date}"
         )
         return template.format(self)
 
@@ -54,9 +51,6 @@ class SalesProducerToShowroom(DateAdded, models.Model):
         "producer.ProducerCar", on_delete=models.PROTECT, related_name="car_for_sale", null=True
     )
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
-    amount_of_discount = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(30)]
-    )
 
     class Meta:
         db_table = "sales_producer_to_showroom"
@@ -64,6 +58,6 @@ class SalesProducerToShowroom(DateAdded, models.Model):
     def __str__(self):
         template = (
             "{0.showroom} {0.producer} {0.car}"
-            "{0.price} {0.amount_of_discount} {0.added_date}"
+            "{0.price} {0.added_date}"
         )
         return template.format(self)

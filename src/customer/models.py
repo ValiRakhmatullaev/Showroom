@@ -11,13 +11,14 @@ class Customer(DateUpdatedAdded, Information):
     driver_licence = models.BooleanField(default=True)
     specification = models.JSONField(
         default={
-            "auto_name": "chevrolet",
-            "model": "malibu",
-            "color": "blue",
-            "year": "2017",
-            "engine": 1.5,
-            "price": 12000,
-            "body_type": "sedan", },
+            "brand": "",
+            "model": "",
+            "color": "",
+            "year": "",
+            "engine": "",
+            "price": "",
+            "body_type": "",
+        },
     )
 
     class Meta:

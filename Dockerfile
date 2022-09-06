@@ -10,7 +10,10 @@ ENV PYTHONDONTWRITEBYTECODE 1
 RUN pip install --upgrade pip
 RUN pip install pipenv
 
-COPY . .
 
+
+COPY Pipfile .
+COPY Pipfile.lock .
 RUN pipenv install --system --deploy
 
+COPY . .
