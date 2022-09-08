@@ -18,6 +18,8 @@ psycopg2-binary = "*"
 rest-condition = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
+gunicorn = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

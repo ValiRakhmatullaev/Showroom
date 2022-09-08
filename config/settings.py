@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", 'asbyd8f6QWD8Y80f^*)^V^*)VS80f)*)*GFVD(_F*_)yg)')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = os.environ.get("DEBUG", False)
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'src.transaction',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -163,21 +165,6 @@ DJOSER = {
         "user_create": "src.users.serializers.ShowroomUserSerializer",
         "activation": "djoser.serializers.ActivationSerializer",
         "user": "djoser.serializers.UserSerializer",
-        "current_user": "djoser.serializers.UserSerializer",
-        "token": "djoser.serializers.TokenSerializer",
-        "token_create": "djoser.serializers.TokenCreateSerializer",
-        "user_create_password_retype": "djoser.serializers.UserCreatePasswordRetypeSerializer",
-        "user_delete": "djoser.serializers.UserDeleteSerializer",
-        "password_reset": "djoser.serializers.SendEmailResetSerializer",
-        "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
-        "password_reset_confirm_retype": "djoser.serializers.PasswordResetConfirmRetypeSerializer",
-        "set_password": "djoser.serializers.SetPasswordSerializer",
-        "set_password_retype": "djoser.serializers.SetPasswordRetypeSerializer",
-        "set_username": "djoser.serializers.SetUsernameSerializer",
-        "set_username_retype": "djoser.serializers.SetUsernameRetypeSerializer",
-        "username_reset": "djoser.serializers.SendEmailResetSerializer",
-        "username_reset_confirm": "djoser.serializers.UsernameResetConfirmSerializer",
-        "username_reset_confirm_retype": "djoser.serializers.UsernameResetConfirmRetypeSerializer",
     },
 }
 
@@ -203,8 +190,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

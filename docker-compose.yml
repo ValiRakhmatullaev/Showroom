@@ -5,7 +5,7 @@ services:
     image: redis
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
 
   worker:
     restart: always
@@ -33,33 +33,49 @@ services:
       command: 'celery -A config beat -l info'
 
   web:
-    container_name: backend
-    build: .
+    container_name: web
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
     volumes:
       - .:/backend
-    command: sh ./entrypoint.sh
+      - static_volume:/backend/static
     ports:
-      - '8080:8080'
+      - 8000:8000
     env_file:
       - .env
     depends_on:
       - db
 
   db:
-    container_name: postgres
+    container_name: db
     image: postgres:13-alpine
     env_file:
       - .env
     volumes:
       - pg_data:/var/lib/postgresql/data/
     ports:
-      - '5432:5432'
+      - 5432:5432
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/app/static
+    depends_on:
+      - web
 
 
 volumes:
+  static_volume:
   pg_data:
     driver: local
-
-
 
 
