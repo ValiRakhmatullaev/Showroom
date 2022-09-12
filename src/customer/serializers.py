@@ -6,11 +6,11 @@ from src.customer.models import CustomerOrder, Customer
 
 
 class CustomerOrderSerializer(serializers.ModelSerializer):
-    car = CarSerializer(read_only=True)
+    car = CarSerializer(read_only=True,)
 
     class Meta:
         model = CustomerOrder
-        fields = ["app", "price", "car"]
+        fields = ["showroom", "price", "car"]
 
 
 class CustomerSerializer(CountryFieldMixin, serializers.ModelSerializer):

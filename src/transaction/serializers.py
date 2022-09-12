@@ -9,13 +9,13 @@ from src.transaction.models import SalesShowroomToCustomer, SalesProducerToShowr
 
 
 class SalesShowroomToBuyersSerializer(CountryFieldMixin, serializers.ModelSerializer):
-    showroom = ShowroomsCarSerializer(read_only=True)
-    customer = CustomerShortInfoSerializer(read_only=True)
-    car = CarSerializer(read_only=True)
+    showroom = ShowroomsCarSerializer(read_only=True, many=True)
+    customer = CustomerShortInfoSerializer(read_only=True, many=True)
+    car = CarSerializer(read_only=True, many=True)
 
     class Meta:
         model = SalesShowroomToCustomer
-        fields = ["showroom", "customer", "car", "price", "amount_of_discount"]
+        fields = ["showroom", "customer", "car", "price"]
 
 
 class SalesProducerToShowroomSerializer(serializers.ModelSerializer):

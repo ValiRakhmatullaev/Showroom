@@ -20,6 +20,8 @@ djoser = "*"
 djangorestframework-simplejwt = "*"
 gunicorn = "*"
 django-cors-headers = "*"
+django-rest-swagger = "*"
+drf-yasg = "*"
 
 [dev-packages]
 

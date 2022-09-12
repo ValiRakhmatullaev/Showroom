@@ -11,6 +11,7 @@ from .models import Showroom, ShowroomCar
 from .serializers import ShowroomSerializer, ShowroomsCarSerializer, ShowroomCarActionSerializer
 
 
+
 class ShowroomsViewSet(CustomViewSet):
     queryset = Showroom.objects.all()
     serializer_class = ShowroomSerializer
@@ -70,7 +71,7 @@ class ShowroomsCarViewSet(CustomViewSet):
     @action(methods=["get"], detail=True, url_path="details")
     def detail_of_showroom(self, request, pk):
         showroom_detail = ShowroomCar.objects.get(pk=pk)
-        data = ShowroomSerializer(showroom_detail).data
+        data = ShowroomsCarSerializer(showroom_detail).data
         return Response({"Showroom details": data}, status=status.HTTP_200_OK)
 
     @action(methods=["post"], url_path="create", detail=False)

@@ -29,6 +29,7 @@ class ShowroomCarActionSerializer(serializers.ModelSerializer):
 
 class ShowroomsCarSerializer(serializers.ModelSerializer):
     total_cars = serializers.SerializerMethodField()
+
     class Meta:
         model = ShowroomCar
         fields = [
