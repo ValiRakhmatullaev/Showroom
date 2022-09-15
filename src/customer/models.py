@@ -33,7 +33,7 @@ class CustomerOrder(DateAddedUpdated):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, related_name="customer_orders", null=True)
     showroom = models.ForeignKey("app.Showroom", on_delete=models.PROTECT, related_name="showroom_cars", null=True)
     car = models.ForeignKey("app.ShowroomCar", on_delete=models.PROTECT, related_name="showroom_car", null=True)
-    price = models.ForeignKey("app.ShowroomCar", on_delete=models.PROTECT, related_name="showroom_price", null=True)
+    price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, null=True)
 
     class Meta:
         db_table = "customer_order"

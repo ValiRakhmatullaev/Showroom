@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from core.common_api.common_api import CustomViewSet
 from core.permissions.permissions import IsShowroomUser, IsCustomerUser, IsProducerUser
 from src.transaction.models import SalesShowroomToCustomer, SalesProducerToShowroom
-from src.transaction.serializers import SalesShowroomToBuyersSerializer
+from src.transaction.serializers import SalesShowroomToBuyersSerializer, SalesProducerToShowroomSerializer
 
 
 class TransactionShowroomToCustomerViewSet(CustomViewSet):
@@ -44,7 +44,7 @@ class TransactionShowroomToCustomerViewSet(CustomViewSet):
 
 class TransactionProducerToShowroomViewSet(CustomViewSet):
     queryset = SalesProducerToShowroom.objects.all()
-    serializer_class = SalesShowroomToBuyersSerializer
+    serializer_class = SalesProducerToShowroomSerializer
     permission_classes = [(IsProducerUser | IsShowroomUser | IsAdminUser)]
 
     @action(methods=["get"], detail=False, url_path="history")
@@ -56,7 +56,7 @@ class TransactionProducerToShowroomViewSet(CustomViewSet):
     def details_of_transaction(self, request, pk):
         """Return list of customer transactions"""
         producer_transactions = SalesProducerToShowroom.objects.filter(producer=pk)
-        data = SalesShowroomToBuyersSerializer(producer_transactions, many=True).data
+        data = SalesProducerToShowroomSerializer(producer_transactions, many=True).data
         return Response(
             {"Transaction history to producer": data}, status=status.HTTP_200_OK
         )

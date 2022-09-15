@@ -12,14 +12,10 @@ from src.transaction.models import SalesShowroomToCustomer
 def buy_car_from_showroom():
     # create QuerySet all customer
     for customer_item in Customer.objects.all():
-        # create query showroom
         query = customer_item.specification
-        # select 2 fields from query instance (dictionary)
-        # we can select all fields
         query_brand = query.get("brand")
         query_model = query.get("model")
         query_price = query.get("price")
-        print(query_price)
 
         showroom_cars = ShowroomCar.objects.filter(
             (Q(car__car__brand__iexact=query_brand) |
@@ -29,7 +25,6 @@ def buy_car_from_showroom():
         for sh_car in showroom_cars:
             # select price
             showroom_price = sh_car.price
-            print(sh_car.price)
 
             if sh_car.count == 0:
                 continue
@@ -39,10 +34,9 @@ def buy_car_from_showroom():
                 continue
 
             # instances for recording to DB
-            customer_car = ShowroomCar.objects.get(pk=sh_car.car.pk)
+            customer_car = ShowroomCar.objects.get(car=sh_car.car)
             # showroom_profile = ShowroomProfile.objects.get(pk=showroom_item.pk)
             showroom_profile = Showroom.objects.get(pk=sh_car.showroom.pk)
-
             with transaction.atomic():
                 # add car to showroom, increase count
                 result = CustomerOrder.objects.update_or_create(
@@ -51,7 +45,6 @@ def buy_car_from_showroom():
                     showroom=showroom_profile,
                     price=showroom_price,
                 )
-                print(showroom_price)
                 # if result == False (item already exist), then increase count +1
                 if not result[1]:
                     # result[0].count += 1
