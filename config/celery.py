@@ -22,8 +22,8 @@ app.conf.beat_schedule = {
         "task": "src.app.tasks.buy_car_from_producer",
         "schedule": crontab(minute="*/1"),
     },
-    # "buy_car_from_showroom": {
-    #     "task": "src.customer.tasks.buy_car_from_showroom",
-    #     "schedule": crontab(minute="*/1"),
-    # },
+    "buy_car_from_showroom": {
+        "task": "src.customer.tasks.buy_car_from_showroom",
+        "schedule": crontab(minute="*/1"),
+    },
 }
