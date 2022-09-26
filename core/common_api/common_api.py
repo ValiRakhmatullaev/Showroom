@@ -1,4 +1,5 @@
 from rest_framework import status, viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 
@@ -34,7 +35,7 @@ class CustomViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        instance = self.queryset.get(pk=pk)
+        instance = get_object_or_404(self.queryset.all(), pk=pk)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

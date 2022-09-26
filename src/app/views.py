@@ -11,7 +11,6 @@ from .models import Showroom, ShowroomCar
 from .serializers import ShowroomSerializer, ShowroomsCarSerializer, ShowroomCarActionSerializer
 
 
-
 class ShowroomsViewSet(CustomViewSet):
     queryset = Showroom.objects.all()
     serializer_class = ShowroomSerializer

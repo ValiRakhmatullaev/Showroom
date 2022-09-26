@@ -6,7 +6,7 @@ from src.customer.models import CustomerOrder, Customer
 
 
 class CustomerOrderSerializer(serializers.ModelSerializer):
-    car = CarSerializer(read_only=True,)
+    car = CarSerializer(read_only=True, many=True)
 
     class Meta:
         model = CustomerOrder

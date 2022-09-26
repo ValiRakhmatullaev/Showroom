@@ -9,9 +9,9 @@ from src.transaction.models import SalesShowroomToCustomer, SalesProducerToShowr
 
 
 class SalesShowroomToBuyersSerializer(CountryFieldMixin, serializers.ModelSerializer):
-    showroom = ShowroomsCarSerializer(read_only=True, many=True)
-    customer = CustomerShortInfoSerializer(read_only=True, many=True)
-    car = CarSerializer(read_only=True, many=True)
+    # showroom = ShowroomsCarSerializer(read_only=True)
+    # customer = CustomerShortInfoSerializer(read_only=True)
+    # car = CarSerializer(read_only=True)
 
     class Meta:
         model = SalesShowroomToCustomer

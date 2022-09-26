@@ -122,6 +122,7 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
@@ -163,7 +164,7 @@ DJOSER = {
     "ACTIVATION_URL": "api/showroom_user/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
-        "user_create": "users.serializers.ShowroomUserSerializer",
+        "user_create": "src.users.serializers.ShowroomUserSerializer",
         "activation": "djoser.serializers.ActivationSerializer",
         "user": "djoser.serializers.UserSerializer",
         "current_user": "djoser.serializers.UserSerializer",

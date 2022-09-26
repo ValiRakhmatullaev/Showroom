@@ -35,10 +35,13 @@ class TransactionShowroomToCustomerViewSet(CustomViewSet):
     @action(methods=["get"], detail=True, url_path="customer-details")
     def details_of_transaction(self, request, pk):
         """Return list of customer transactions"""
-        customers_transactions = SalesShowroomToCustomer.objects.filter(customer=pk)
-        data = SalesShowroomToBuyersSerializer(customers_transactions, many=True).data
+        customers_transactions = SalesShowroomToCustomer.objects.filter(customer__pk=pk)
+        print(customers_transactions)
+        serializer = SalesShowroomToBuyersSerializer(data=customers_transactions, many=True)
+        serializer.is_valid(raise_exception=False)
+        print(serializer.data)
         return Response(
-            {"Transaction history for customer": data}, status=status.HTTP_200_OK
+            {"Transaction history for customer": serializer.data}, status=status.HTTP_200_OK
         )
 
 
